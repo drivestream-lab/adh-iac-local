@@ -9,8 +9,8 @@ One cluster. Separate databases, not separate servers. ADH owns host ports **543
 | postgres | `pgvector/pgvector:pg16` | DBs: `litellm`, `buzz`, `hermes`, `ledger`, `realworld` |
 | redis | `redis:7-alpine` | LiteLLM cache + Buzz + Hermes |
 | litellm | `ghcr.io/berriai/litellm-database:main-stable` | `:4000→8000`, aliases `glm` / `qwen` / `kimi-k3` via OpenRouter |
-| buzz | built from `adh` (Phase D) | Full chat product |
-| hermes | built from `adh` (Phase E) | PM + after-PR brain |
+| buzz | built from `adh` | Chat API `:8080` + Hermes PM/after-PR in the same process |
+| buzz-ui | `apps/buzz-desktop` | Web client `:8081`; Mac app is `Buzz.app` |
 
 Network: `adh_local`. `realworld-local` joins this network later; it does not start a second Postgres.
 
@@ -22,7 +22,7 @@ make infra-up
 make buzz-up
 ```
 
-Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz API `:8080`, Buzz UI http://localhost:8081/ (Mac app: `cd ../adh && make desktop-install`).
+Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz API `:8080`, Buzz UI http://localhost:8081/ (Mac app: `cd ../adh && make desktop-install`). Hermes PM brief + eng grade land in `#adh-memory` / `#adh-ops` and `GET /api/v1/hermes/ledger`.
 
 Add OpenRouter credentials and models in the LiteLLM UI. Do not put provider keys in git.
 

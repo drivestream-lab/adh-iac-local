@@ -31,10 +31,22 @@ services:
       BUZZ_HEARTBEAT_SECONDS: "90"
       BUZZ_SEED_ON_START: "true"
       BUZZ_PUBLISH_SYSTEM_HEARTBEAT: "true"
+      HERMES_LITELLM_BASE_URL: http://litellm:8000/v1
+      HERMES_LITELLM_API_KEY: ${LITELLM_MASTER_KEY:-sk-adh-local-master}
+      HERMES_MODEL: qwen
+      HERMES_PG_HOST: postgres
+      HERMES_PG_PORT: "5432"
+      HERMES_PG_USER: ${POSTGRES_USER:-adh}
+      HERMES_PG_PASSWORD: ${POSTGRES_PASSWORD:-adh}
+      HERMES_PG_DB: hermes
+      HERMES_LEDGER_DB: ledger
+      HERMES_RUN_BOOT_JOBS: "true"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      litellm:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://127.0.0.1:8080/health"]
