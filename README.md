@@ -19,9 +19,10 @@ Network: `adh_local`. `realworld-local` joins this network later; it does not st
 ```bash
 cp .env.example .env   # first time only
 make infra-up
+make buzz-up
 ```
 
-Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`).
+Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz UI: http://localhost:8080/buzz/
 
 Add OpenRouter credentials and models in the LiteLLM UI. Do not put provider keys in git.
 

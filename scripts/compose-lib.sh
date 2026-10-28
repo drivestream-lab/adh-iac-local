@@ -9,6 +9,7 @@ cd "$IAC_LOCAL_ROOT"
 
 INFRA_PROJECT="${INFRA_PROJECT:-adh-infra}"
 INFRA_FILE="${INFRA_FILE:-docker-compose.local-infra.yml}"
+BUZZ_FILE="${BUZZ_FILE:-docker-compose.buzz.yml}"
 ENV_FILE="${ENV_FILE:-.env}"
 
 ensure_env_file() {
@@ -27,6 +28,14 @@ ensure_shared_resources() {
 
 compose_infra() {
   local args=(-p "$INFRA_PROJECT" -f "$INFRA_FILE")
+  if [[ -f "$ENV_FILE" ]]; then
+    args+=(--env-file "$ENV_FILE")
+  fi
+  docker compose "${args[@]}" "$@"
+}
+
+compose_buzz() {
+  local args=(-p "$INFRA_PROJECT" -f "$INFRA_FILE" -f "$BUZZ_FILE")
   if [[ -f "$ENV_FILE" ]]; then
     args+=(--env-file "$ENV_FILE")
   fi
