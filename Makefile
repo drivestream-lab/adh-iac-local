@@ -14,7 +14,7 @@ help:
 	@echo "  make infra-logs     Follow logs"
 	@echo "  make infra-ps       Status"
 	@echo "  make infra-health   Probe :5432 :6379 :4000"
-	@echo "  make buzz-up        Start Buzz on the shared cluster (builds adh)"
+	@echo "  make buzz-up        Start Buzz API + Mac UI on the shared cluster"
 	@echo "  make buzz-down      Stop Buzz (infra stays up)"
 	@echo "  make down           Alias for infra-down (also stops Buzz)"
 	@echo "  make down-clean     Destroy containers AND volumes (DESTRUCTIVE)"
@@ -32,10 +32,14 @@ infra-down:
 	@bash -c 'source "$(LIB)" && compose_infra down'
 
 buzz-up: infra-up
-	@bash -c 'source "$(LIB)" && compose_buzz up -d --build buzz'
+	@bash -c 'source "$(LIB)" && compose_buzz up -d --build buzz buzz-ui'
 	@bash -c 'source "$(LIB)" && wait_container_healthy adh-buzz 180'
+	@bash -c 'source "$(LIB)" && wait_container_healthy adh-buzz-ui 180'
 	@curl -sf http://localhost:8080/health >/dev/null && echo "buzz: ok"
-	@echo "Buzz UI: http://localhost:8080/buzz/"
+	@curl -sf http://localhost:8081/ >/dev/null && echo "buzz-ui: ok"
+	@echo "Buzz API: http://localhost:8080/"
+	@echo "Buzz UI:  http://localhost:8081/"
+	@echo "Mac app:  cd ../adh && make desktop-install"
 
 buzz-down:
 	@bash -c 'source "$(LIB)" && compose_buzz stop buzz && compose_buzz rm -f buzz'

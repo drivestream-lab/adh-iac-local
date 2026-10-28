@@ -22,7 +22,7 @@ make infra-up
 make buzz-up
 ```
 
-Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz UI: http://localhost:8080/buzz/
+Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz API `:8080`, Buzz UI http://localhost:8081/ (Mac app: `cd ../adh && make desktop-install`).
 
 Add OpenRouter credentials and models in the LiteLLM UI. Do not put provider keys in git.
 
