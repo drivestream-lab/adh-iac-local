@@ -1,0 +1,101 @@
+# ADH shared local infra (Compose project: adh-infra)
+# Usage: make infra-up
+# Network: adh_local (realworld-local joins this as external later).
+# Do not add kafka, cratedb, alloy, apicurio, or a second Postgres/Redis.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: adh-postgres
+    networks:
+      - adh_local
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-adh}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-adh}
+      POSTGRES_DB: ${POSTGRES_DB:-adh}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./config/postgres/01-init-pgvector.sql:/docker-entrypoint-initdb.d/01-init-pgvector.sql:ro
+      - ./config/postgres/02-init-databases.sh:/docker-entrypoint-initdb.d/02-init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adh} -d ${POSTGRES_DB:-adh}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: adh-redis
+    networks:
+      - adh_local
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # LiteLLM — AI gateway with Postgres + Admin UI (/ui). UI-first (models in DB).
+  # Host http://localhost:4000 → container :8000 (apps use http://litellm:8000/v1 + Bearer master key).
+  litellm:
+    image: ghcr.io/berriai/litellm-database:main-stable
+    container_name: adh-litellm
+    networks:
+      - adh_local
+    ports:
+      - "4000:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-adh}:${POSTGRES_PASSWORD:-adh}@postgres:5432/${LITELLM_POSTGRES_DB:-litellm}
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-adh-local-master}
+      LITELLM_SALT_KEY: ${LITELLM_SALT_KEY:-adh-local-salt-change-me}
+      STORE_MODEL_IN_DB: "True"
+      UI_USERNAME: ${UI_USERNAME:-adh-admin}
+      UI_PASSWORD: ${UI_PASSWORD:-adh-admin}
+      ROOT_REDIRECT_URL: /ui
+      DOCS_URL: /docs
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+      REDIS_ENABLED: "true"
+      CACHE_TTL: ${CACHE_TTL:-3600}
+      LITELLM_LOG: ${LITELLM_LOG:-INFO}
+    volumes:
+      - ./config/litellm:/app/config:ro
+    command: ["--config", "/app/config/config.yaml", "--port", "8000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python3",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/liveliness')",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  adh_local:
+    name: adh_local
+    external: true
+
+volumes:
+  postgres_data:
+  redis_data:
