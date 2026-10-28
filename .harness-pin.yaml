@@ -1,0 +1,15 @@
+# Harness pin — do not edit refs without platform approval.
+# compose-local is a programme stack (not a prayog built-in profile).
+# Skills pin is optional; no app constitution.
+
+profile: compose-local
+delivery_contract: sdd-delivery/v2
+
+agent_skills:
+  repo: drivestream-lab/prayog-skills
+  ref: v0.5.6
+  profile: compose-local
+  skills:
+    - commit-workspace
+    - open-draft-pr
+    - create-board-tickets

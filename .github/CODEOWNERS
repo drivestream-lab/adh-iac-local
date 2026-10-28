@@ -1,0 +1,5 @@
+# Compose-local profile — shared ADH infra.
+# Branch protection: develop / main require PR reviews.
+
+/.github/workflows/                                   @drivestream-lab/platform-devs
+*                                                    @drivestream-lab/platform-devs

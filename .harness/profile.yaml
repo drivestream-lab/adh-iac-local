@@ -1,0 +1,16 @@
+# Local compose harness — shared infra, no app constitution.
+# Not a prayog built-in profile; launchpad stack_profiles.compose-local.
+
+profile: compose-local
+
+layout:
+  constitution: AGENTS.md
+  spec_root: docs
+  reports_dir: docs/reports
+  source_roots:
+    - .
+
+forge_skills:
+  - commit-workspace
+  - open-draft-pr
+  - create-board-tickets

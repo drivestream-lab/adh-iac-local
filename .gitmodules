@@ -1,0 +1,3 @@
+[submodule "prayog-skills"]
+	path = prayog-skills
+	url = https://github.com/drivestream-lab/prayog-skills
