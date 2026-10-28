@@ -1,10 +1,21 @@
-# ADH LiteLLM — UI-first (same pattern as autrio10x/iac-local).
-# Models and provider credentials live in Postgres via Admin UI (/ui).
-# This file is proxy/infra only. See config/litellm/README.md.
+# ADH LiteLLM — OpenRouter via config aliases + Admin UI (/ui).
+# Client names: glm, qwen, kimi-k3. Provider key is OPENROUTER_API_KEY (local .env).
 # Host: http://localhost:4000  |  UI: http://localhost:4000/ui
 # In-compose: apps call http://litellm:8000/v1 (container port 8000).
 
-model_list: []
+model_list:
+  - model_name: glm
+    litellm_params:
+      model: openrouter/z-ai/glm-5.3-flash
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: qwen
+    litellm_params:
+      model: openrouter/qwen/qwen3.8-max-0902
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: kimi-k3
+    litellm_params:
+      model: openrouter/moonshotai/kimi-k3
+      api_key: os.environ/OPENROUTER_API_KEY
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY

@@ -8,7 +8,7 @@ One cluster. Separate databases, not separate servers. ADH owns host ports **543
 | --- | --- | --- |
 | postgres | `pgvector/pgvector:pg16` | DBs: `litellm`, `buzz`, `hermes`, `ledger`, `realworld` |
 | redis | `redis:7-alpine` | LiteLLM cache + Buzz + Hermes |
-| litellm | `ghcr.io/berriai/litellm-database:main-stable` | `:4000→8000`, UI, OpenRouter via LiteLLM UI |
+| litellm | `ghcr.io/berriai/litellm-database:main-stable` | `:4000→8000`, aliases `glm` / `qwen` / `kimi-k3` via OpenRouter |
 | buzz | built from `adh` (Phase D) | Full chat product |
 | hermes | built from `adh` (Phase E) | PM + after-PR brain |
 

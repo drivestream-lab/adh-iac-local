@@ -1,36 +1,38 @@
-# LiteLLM Admin UI (ADH local) — UI-first
+# LiteLLM (ADH local)
 
-Models and provider API keys are managed in the **Admin UI** (Postgres).
-`config.yaml` only configures the proxy: Redis cache, `drop_params`, timeouts, master key.
+Hermes calls LiteLLM. Cursor CLI does not.
 
-API requests must send `Authorization: Bearer <LITELLM_MASTER_KEY>` (or a virtual key from the UI).
+Client aliases (Bearer `LITELLM_MASTER_KEY`):
+
+| Alias | OpenRouter model |
+| --- | --- |
+| `glm` | `z-ai/glm-5.3-flash` |
+| `qwen` | `qwen/qwen3.8-max-0902` |
+| `kimi-k3` | `moonshotai/kimi-k3` |
+
+`OPENROUTER_API_KEY` lives in local `.env` (gitignored), passed into the container.
 
 ## Start
 
 ```bash
-# From adh-iac-local/
+cp .env.example .env   # first time; paste OPENROUTER_API_KEY
 make infra-up
 ```
 
-Open http://localhost:4000/ui — login with `UI_USERNAME` / `UI_PASSWORD` from `.env`
-(defaults: `adh-admin` / `adh-admin`).
+UI: http://localhost:4000/ui (`adh-admin` / `adh-admin`).
 
-First boot: allow ~60s for Prisma migrations (`litellm-database` image).
-
-## Add OpenRouter (you)
-
-1. **Models → LLM Credentials → Add Credential** — provider OpenRouter, paste the API key.
-2. **Models → Add Model** — pick Existing Credentials. Client-facing name is what Hermes will call.
-
-No proxy restart required (`STORE_MODEL_IN_DB=True`). Do not put provider keys in git.
-
-## API
+## Call
 
 ```bash
-export LITELLM_MASTER_KEY=sk-adh-local-master   # from .env
+export LITELLM_MASTER_KEY=sk-adh-local-master
 
 curl -s http://localhost:4000/v1/models \
   -H "Authorization: Bearer $LITELLM_MASTER_KEY"
+
+curl -s http://localhost:4000/v1/chat/completions \
+  -H "Authorization: Bearer $LITELLM_MASTER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"glm","messages":[{"role":"user","content":"hi"}],"max_tokens":32}'
 ```
 
-In Docker network: `http://litellm:8000/v1` (same Bearer). Cursor CLI does not use LiteLLM.
+In Docker network: `http://litellm:8000/v1`.

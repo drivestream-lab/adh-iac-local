@@ -67,6 +67,7 @@ services:
       REDIS_ENABLED: "true"
       CACHE_TTL: ${CACHE_TTL:-3600}
       LITELLM_LOG: ${LITELLM_LOG:-INFO}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
     volumes:
       - ./config/litellm:/app/config:ro
     command: ["--config", "/app/config/config.yaml", "--port", "8000"]
