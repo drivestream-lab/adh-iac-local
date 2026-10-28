@@ -22,7 +22,7 @@ make infra-up
 make buzz-up
 ```
 
-Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz API `:8080`, Buzz UI http://localhost:8081/ (Mac app: `cd ../adh && make desktop-install`). Hermes PM brief + eng grade land in `#adh-memory` / `#adh-ops` and `GET /api/v1/hermes/ledger`.
+Health: Postgres `:5432`, Redis `:6379`, LiteLLM UI http://localhost:4000/ui (login `adh-admin` / `adh-admin` unless you changed `.env`). Buzz API `:8080`, Buzz UI http://localhost:8081/ (Mac app: `cd ../adh && make desktop-install`). Hermes PM brief + eng grade land in `#adh-memory` / `#adh-ops` and `GET /api/v1/hermes/ledger`. Host orchestrator (Cursor CLI spawn) is `cd ../adh && make orch-spawn` — it is not a Docker service.
 
 Add OpenRouter credentials and models in the LiteLLM UI. Do not put provider keys in git.
 
