@@ -12,7 +12,7 @@ One cluster. Separate databases, not separate servers. ADH owns host ports **543
 | buzz | built from `adh` | Chat API `:8080` + Hermes PM/after-PR in the same process |
 | buzz-ui | `apps/buzz-desktop` | Web client `:8081`; Mac app is `Buzz.app` |
 
-Network: `adh_local`. `realworld-local` joins this network later; it does not start a second Postgres.
+Network: `adh_local`. `realworld-local` joins this network (`make -C ../realworld-local up`) and uses Postgres DB `realworld`. It does not start a second Postgres.
 
 ## Start
 
